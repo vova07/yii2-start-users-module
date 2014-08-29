@@ -299,7 +299,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generateToken()
     {
-        $this->token = Security::generateExpiringRandomKey();
+        $this->token = Security::generateExpiringRandomString();
     }
 
     /**

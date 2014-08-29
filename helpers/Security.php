@@ -13,7 +13,7 @@ class Security
      * Generate a random key with time suffix.
      * @return string Random key
      */
-    public static function generateExpiringRandomKey()
+    public static function generateExpiringRandomString()
     {
         return Yii::$app->getSecurity()->generateRandomString() . '_' . time();
     }

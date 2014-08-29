@@ -103,7 +103,7 @@ class m140418_204054_create_module_tbl extends Migration
         $time = time();
         $password_hash = Yii::$app->security->generatePasswordHash('admin12345');
         $auth_key = Yii::$app->security->generateRandomString();
-        $token = Security::generateExpiringRandomKey();
+        $token = Security::generateExpiringRandomString();
         return "INSERT INTO {{%users}} (`username`, `email`, `password_hash`, `auth_key`, `token`, `role`, `status_id`, `created_at`, `updated_at`) VALUES ('admin', 'admin@demo.com', '$password_hash', '$auth_key', '$token', 'superadmin', 1, $time, $time)";
     }
 

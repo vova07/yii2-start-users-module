@@ -56,7 +56,7 @@ class Email extends ActiveRecord
      */
     public function generateToken()
     {
-        $this->token = Security::generateExpiringRandomKey();
+        $this->token = Security::generateExpiringRandomString();
     }
 
     /**
