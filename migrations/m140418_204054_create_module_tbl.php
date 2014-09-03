@@ -121,6 +121,7 @@ class m140418_204054_create_module_tbl extends Migration
     public function safeDown()
     {
         $this->dropTable('{{%user_email}}');
+        $this->dropTable('{{%profiles}}');
         $this->dropTable('{{%users}}');
     }
 }
