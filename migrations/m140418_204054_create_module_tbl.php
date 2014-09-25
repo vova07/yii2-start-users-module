@@ -112,7 +112,7 @@ class m140418_204054_create_module_tbl extends Migration
      */
     private function getProfileSql()
     {
-        return "INSERT INTO {{%profiles}} (`user_id`, `name`, `surname`) VALUES (1, 'Administration', 'Site')";
+        return "INSERT INTO {{%profiles}} (`user_id`, `name`, `surname`, `avatar_url`) VALUES (1, 'Administration', 'Site', '')";
     }
 
     /**
