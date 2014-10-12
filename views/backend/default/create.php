@@ -8,10 +8,10 @@
  * @var \vova07\users\models\Profile $profile Profile
  * @var array $roleArray Roles array
  * @var array $statusArray Statuses array
- * @var \backend\themes\admin\widgets\Box $box Box widget instance
+ * @var \vova07\themes\admin\widgets\Box $box Box widget instance
  */
 
-use backend\themes\admin\widgets\Box;
+use vova07\themes\admin\widgets\Box;
 use vova07\users\Module;
 
 $this->title = Module::t('users', 'BACKEND_CREATE_TITLE');
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'] = [
                 'bodyOptions' => [
                     'class' => 'table-responsive'
                 ],
-                'buttonsTemplate' => '{cancel} {delete}'
+                'buttonsTemplate' => '{cancel}'
             ]
         );
         echo $this->render(

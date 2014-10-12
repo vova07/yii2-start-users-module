@@ -2,17 +2,17 @@
 
 namespace vova07\users\controllers\backend;
 
-use backend\modules\admin\components\Controller;
+use vova07\admin\components\Controller;
 use vova07\fileapi\actions\UploadAction as FileAPIUpload;
 use vova07\users\models\backend\User;
 use vova07\users\models\backend\UserSearch;
 use vova07\users\models\Profile;
 use vova07\users\Module;
+use Yii;
 use yii\filters\VerbFilter;
 use yii\web\HttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use Yii;
 
 /**
  * Default backend controller.
@@ -26,6 +26,28 @@ class DefaultController extends Controller
     {
         $behaviors = parent::behaviors();
 
+        $behaviors['access']['rules'] = [
+            [
+                'allow' => true,
+                'actions' => ['index'],
+                'roles' => ['BViewUsers']
+            ]
+        ];
+        $behaviors['access']['rules'][] = [
+            'allow' => true,
+            'actions' => ['create'],
+            'roles' => ['BCreateUsers']
+        ];
+        $behaviors['access']['rules'][] = [
+            'allow' => true,
+            'actions' => ['update'],
+            'roles' => ['BUpdateUsers']
+        ];
+        $behaviors['access']['rules'][] = [
+            'allow' => true,
+            'actions' => ['delete', 'batch-delete'],
+            'roles' => ['BDeleteUsers']
+        ];
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
@@ -63,15 +85,12 @@ class DefaultController extends Controller
         $statusArray = User::getStatusArray();
         $roleArray = User::getRoleArray();
 
-        return $this->render(
-            'index',
-            [
+        return $this->render('index', [
                 'dataProvider' => $dataProvider,
                 'searchModel' => $searchModel,
                 'roleArray' => $roleArray,
                 'statusArray' => $statusArray
-            ]
-        );
+            ]);
     }
 
     /**
@@ -99,15 +118,12 @@ class DefaultController extends Controller
             }
         }
 
-        return $this->render(
-            'create',
-            [
+        return $this->render('create', [
                 'user' => $user,
                 'profile' => $profile,
                 'roleArray' => $roleArray,
                 'statusArray' => $statusArray
-            ]
-        );
+            ]);
     }
 
     /**
@@ -138,15 +154,12 @@ class DefaultController extends Controller
             }
         }
 
-        return $this->render(
-            'update',
-            [
+        return $this->render('update', [
                 'user' => $user,
                 'profile' => $profile,
                 'roleArray' => $roleArray,
                 'statusArray' => $statusArray
-            ]
-        );
+            ]);
     }
 
     /**

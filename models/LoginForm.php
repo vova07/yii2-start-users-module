@@ -87,8 +87,14 @@ class LoginForm extends Model
     protected function getUser()
     {
         if ($this->_user === null) {
-            $scope = $this->module->isBackend ? ['admin', 'active'] : 'active';
-            $this->_user = User::findByUsername($this->username, $scope);
+            $user = User::findByUsername($this->username, 'active');
+            if ($this->module->isBackend) {
+                if ($user !== null && Yii::$app->authManager->checkAccess($user->id, 'accessBackend')) {
+                    $this->_user = $user;
+                }
+            } else {
+                $this->_user = $user;
+            }
         }
         return $this->_user;
     }

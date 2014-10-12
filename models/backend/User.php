@@ -148,5 +148,15 @@ class User extends \vova07\users\models\User
         if ($this->profile !== null) {
             $this->profile->save(false);
         }
+
+        $auth = Yii::$app->authManager;
+        $name = $this->role ? $this->role : self::ROLE_DEFAULT;
+        $role = $auth->getRole($name);
+
+        if (!$insert) {
+            $auth->revokeAll($this->id);
+        }
+
+        $auth->assign($role, $this->id);
     }
 }
