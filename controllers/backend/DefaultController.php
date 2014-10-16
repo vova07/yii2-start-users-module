@@ -48,6 +48,11 @@ class DefaultController extends Controller
             'actions' => ['delete', 'batch-delete'],
             'roles' => ['BDeleteUsers']
         ];
+        $behaviors['access']['rules'][] = [
+            'allow' => true,
+            'actions' => ['fileapi-upload'],
+            'roles' => ['BCreateUsers', 'BUpdateUsers']
+        ];
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
