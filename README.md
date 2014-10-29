@@ -29,7 +29,9 @@ Configuration
 ```
 'modules' => [
     'users' => [
-        'class' => 'vova07\blogs\Module'
+        'class' => 'vova07\blogs\Module',
+        'robotEmail' => 'no-reply@yii2-start.domain', // Sender email. This email is required. From this address module will send all emails
+        'robotName' => 'Robot' // Sender name
     ]
 ]
 ```
