@@ -84,7 +84,7 @@ class LoginForm extends Model
     /**
      * Finds user by username.
      *
-     * @return User|null User instance
+     * @return User|boolean User instance
      */
     protected function getUser()
     {
@@ -109,6 +109,6 @@ class LoginForm extends Model
      */
     public function login()
     {
-        return Yii::$app->user->login($this->user, $this->rememberMe ? 3600 * 24 * 30 : 0);
+        return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
     }
 }
