@@ -4,8 +4,8 @@ namespace vova07\users\models;
 
 use vova07\users\Module;
 use vova07\users\traits\ModuleTrait;
-use yii\base\Model;
 use Yii;
+use yii\base\Model;
 
 /**
  * Class LoginForm
@@ -36,9 +36,9 @@ class LoginForm extends Model
     public $rememberMe = true;
 
     /**
-     * @var User|null User instance
+     * @var User|boolean User instance
      */
-    private $_user;
+    private $_user = false;
 
     /**
      * @inheritdoc
@@ -73,9 +73,11 @@ class LoginForm extends Model
      */
     public function validatePassword($attribute, $params)
     {
-        $user = $this->getUser();
-        if (!$user || !$user->validatePassword($this->$attribute)) {
-            $this->addError($attribute, Module::t('users', 'ERROR_MSG_INVALID_USERNAME_OR_PASSWORD'));
+        if (!$this->hasErrors()) {
+            $user = $this->getUser();
+            if (!$user || !$user->validatePassword($this->$attribute)) {
+                $this->addError($attribute, Module::t('users', 'ERROR_MSG_INVALID_USERNAME_OR_PASSWORD'));
+            }
         }
     }
 
@@ -86,14 +88,16 @@ class LoginForm extends Model
      */
     protected function getUser()
     {
-        if ($this->_user === null) {
+        if ($this->_user === false) {
             $user = User::findByUsername($this->username, 'active');
-            if ($this->module->isBackend) {
-                if ($user !== null && Yii::$app->authManager->checkAccess($user->id, 'accessBackend')) {
+            if ($user !== null) {
+                if ($this->module->isBackend) {
+                    if (Yii::$app->authManager->checkAccess($user->id, 'accessBackend')) {
+                        $this->_user = $user;
+                    }
+                } else {
                     $this->_user = $user;
                 }
-            } else {
-                $this->_user = $user;
             }
         }
         return $this->_user;
