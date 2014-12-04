@@ -279,6 +279,19 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function beforeDelete()
+    {
+        if (parent::beforeDelete()) {
+            Yii::$app->authManager->revokeAll($this->id);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @return Profile|null User profile
      */
     public function getProfile()
