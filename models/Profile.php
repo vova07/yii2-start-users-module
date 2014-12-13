@@ -73,9 +73,9 @@ class Profile extends ActiveRecord
     {
         return [
             // Name
-            ['name', 'match', 'pattern' => '/^[a-zа-яё]+$/iu'],
+            ['name', 'match', 'pattern' => Module::getInstance()->patternName],
             // Surname
-            ['surname', 'match', 'pattern' => '/^[a-zа-яё]+(-[a-zа-яё]+)?$/iu']
+            ['surname', 'match', 'pattern' => Module::getInstance()->patternSurname]
         ];
     }
 
