@@ -48,7 +48,7 @@ class User extends \vova07\users\models\User
             [['username', 'email'], 'unique'],
 
             // Username
-            ['username', 'match', 'pattern' => Module::getInstance()->patternUsername],
+            ['username', 'match', 'pattern' => '/^[a-zA-Z0-9_-]+$/'],
             ['username', 'string', 'min' => 3, 'max' => 30],
 
             // E-mail

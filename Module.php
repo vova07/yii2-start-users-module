@@ -75,21 +75,6 @@ class Module extends \yii\base\Module
     public $avatarUrl = '/statics/users/avatars';
 
     /**
-     * @var string Username regular pattern
-     */
-    public $patternUsername = '/^[a-zA-Z0-9_-]+$/';
-
-    /**
-     * @var string Name regular pattern
-     */
-    public $patternName = '/^[a-zа-яё]+$/iu';
-
-    /**
-     * @var string Surname regular pattern
-     */
-    public $patternSurname = '/^[a-zа-яё]+(-[a-zа-яё]+)?$/iu';
-
-    /**
      * @var boolean Is module used for backend.
      */
     private $_isBackend;
