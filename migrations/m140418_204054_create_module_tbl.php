@@ -11,11 +11,11 @@ use yii\db\Schema;
  * Create module tables.
  *
  * Will be created 3 tables:
- * - `{{%users}}` - Users table.
- * - `{{%profiles}}` - User profiles table.
- * - `{{%user_email}}` - Users email table. This table is used to store temporary new user email address.
+ * - {{%users}} - Users table.
+ * - {{%profiles}} - User profiles table.
+ * - {{%user_email}} - Users email table. This table is used to store temporary new user email address.
  *
- * By default will be added one superadministrator with login: `admin` and password: `admin12345`.
+ * By default will be added one superadministrator with login: admin and password: admin12345.
  */
 class m140418_204054_create_module_tbl extends Migration
 {
@@ -24,9 +24,12 @@ class m140418_204054_create_module_tbl extends Migration
      */
     public function safeUp()
     {
+      $tableOptions = null;
         // MySql table options
-        $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
-
+        if ($this->db->driverName === 'mysql') {
+            // http://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
+            $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
+        }
         // Users table
         $this->createTable(
             '{{%users}}',
@@ -37,8 +40,8 @@ class m140418_204054_create_module_tbl extends Migration
                 'password_hash' => Schema::TYPE_STRING . ' NOT NULL',
                 'auth_key' => Schema::TYPE_STRING . '(32) NOT NULL',
                 'token' => Schema::TYPE_STRING . '(53) NOT NULL',
-                'role' => Schema::TYPE_STRING . '(64) NOT NULL DEFAULT "user"',
-                'status_id' => 'tinyint(4) NOT NULL DEFAULT 0',
+                'role' => Schema::TYPE_STRING . '(64) NOT NULL DEFAULT \'user\'',
+                'status_id' => Schema::TYPE_SMALLINT . ' NOT NULL DEFAULT 0',
                 'created_at' => Schema::TYPE_INTEGER . ' NOT NULL',
                 'updated_at' => Schema::TYPE_INTEGER . ' NOT NULL'
             ],
@@ -74,7 +77,7 @@ class m140418_204054_create_module_tbl extends Migration
                 'user_id' => Schema::TYPE_INTEGER . ' NOT NULL',
                 'email' => Schema::TYPE_STRING . '(100) NOT NULL',
                 'token' => Schema::TYPE_STRING . '(53) NOT NULL',
-                'PRIMARY KEY (`user_id`, `token`)'
+                'PRIMARY KEY (user_id, token)'
             ],
             $tableOptions
         );
@@ -104,7 +107,7 @@ class m140418_204054_create_module_tbl extends Migration
         $password_hash = Yii::$app->security->generatePasswordHash('admin12345');
         $auth_key = Yii::$app->security->generateRandomString();
         $token = Security::generateExpiringRandomString();
-        return "INSERT INTO {{%users}} (`username`, `email`, `password_hash`, `auth_key`, `token`, `role`, `status_id`, `created_at`, `updated_at`) VALUES ('admin', 'admin@demo.com', '$password_hash', '$auth_key', '$token', 'superadmin', 1, $time, $time)";
+        return "INSERT INTO {{%users}} (username, email, password_hash, auth_key, token, role, status_id, created_at, updated_at) VALUES ('admin', 'admin@demo.com', '$password_hash', '$auth_key', '$token', 'superadmin', 1, $time, $time)";
     }
 
     /**
@@ -112,7 +115,7 @@ class m140418_204054_create_module_tbl extends Migration
      */
     private function getProfileSql()
     {
-        return "INSERT INTO {{%profiles}} (`user_id`, `name`, `surname`, `avatar_url`) VALUES (1, 'Administration', 'Site', '')";
+        return "INSERT INTO {{%profiles}} (user_id, name, surname, avatar_url) VALUES (1, 'Administration', 'Site', '')";
     }
 
     /**
