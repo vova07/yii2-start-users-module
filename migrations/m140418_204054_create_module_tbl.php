@@ -95,7 +95,7 @@ class m140418_204054_create_module_tbl extends Migration
 
         // Add super-administrator
         $this->addFirstUser();
-        $this->execute($this->getProfileSql());
+        $this->addFirstProfile();
     }
 
     /**
@@ -124,7 +124,7 @@ class m140418_204054_create_module_tbl extends Migration
     /**
      * Insert first super-admin user profile
      */
-    private function getProfileSql()
+    private function addFirstProfile()
     {
         $this->insert('{{%profiles}}', [
             'user_id' => 1,
