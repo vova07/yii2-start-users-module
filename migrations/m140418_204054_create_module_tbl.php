@@ -15,7 +15,7 @@ use yii\db\Schema;
  * - {{%profiles}} - User profiles table.
  * - {{%user_email}} - Users email table. This table is used to store temporary new user email address.
  *
- * By default will be added one superadministrator with login: admin and password: admin12345.
+ * By default will be added one super-administrator with login: admin and password: admin12345.
  */
 class m140418_204054_create_module_tbl extends Migration
 {
@@ -24,7 +24,7 @@ class m140418_204054_create_module_tbl extends Migration
      */
     public function safeUp()
     {
-      $tableOptions = null;
+        $tableOptions = null;
         // MySql table options
         if ($this->db->driverName === 'mysql') {
             // http://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
@@ -34,26 +34,26 @@ class m140418_204054_create_module_tbl extends Migration
         $this->createTable(
             '{{%users}}',
             [
-                'id' => Schema::TYPE_PK,
-                'username' => Schema::TYPE_STRING . '(30) NOT NULL',
-                'email' => Schema::TYPE_STRING . '(100) NOT NULL',
-                'password_hash' => Schema::TYPE_STRING . ' NOT NULL',
-                'auth_key' => Schema::TYPE_STRING . '(32) NOT NULL',
-                'token' => Schema::TYPE_STRING . '(53) NOT NULL',
-                'role' => Schema::TYPE_STRING . '(64) NOT NULL DEFAULT \'user\'',
-                'status_id' => Schema::TYPE_SMALLINT . ' NOT NULL DEFAULT 0',
-                'created_at' => Schema::TYPE_INTEGER . ' NOT NULL',
-                'updated_at' => Schema::TYPE_INTEGER . ' NOT NULL'
+                'id' => $this->primaryKey(),
+                'username' => $this->string(30)->notNull(),
+                'email' => $this->string(100)->notNull(),
+                'password_hash' => $this->string(255)->notNull(),
+                'auth_key' => $this->string(32)->notNull(),
+                'token' => $this->string(53)->notNull(),
+                'role' => $this->string(64)->notNull()->defaultValue('user'),
+                'status_id' => $this->smallInteger()->notNull()->defaultValue(0),
+                'created_at' => $this->integer()->notNull(),
+                'updated_at' => $this->integer()->notNull(),
             ],
             $tableOptions
         );
 
         // Indexes
-        $this->createIndex('username', '{{%users}}', 'username', true);
-        $this->createIndex('email', '{{%users}}', 'email', true);
-        $this->createIndex('role', '{{%users}}', 'role');
-        $this->createIndex('status_id', '{{%users}}', 'status_id');
-        $this->createIndex('created_at', '{{%users}}', 'created_at');
+        $this->createIndex('users-username', '{{%users}}', 'username', true);
+        $this->createIndex('users-email', '{{%users}}', 'email', true);
+        $this->createIndex('users-role', '{{%users}}', 'role');
+        $this->createIndex('users-status_id', '{{%users}}', 'status_id');
+        $this->createIndex('users-created_at', '{{%users}}', 'created_at');
 
         // Users table
         $this->createTable(
@@ -74,13 +74,13 @@ class m140418_204054_create_module_tbl extends Migration
         $this->createTable(
             '{{%user_email}}',
             [
-                'user_id' => Schema::TYPE_INTEGER . ' NOT NULL',
-                'email' => Schema::TYPE_STRING . '(100) NOT NULL',
-                'token' => Schema::TYPE_STRING . '(53) NOT NULL',
-                'PRIMARY KEY (user_id, token)'
+                'user_id' => $this->integer()->notNull(),
+                'email' => $this->string(100)->notNull(),
+                'token' => $this->string(53)->notNull(),
             ],
             $tableOptions
         );
+        $this->addPrimaryKey('user_email_pk', '{{%user_email}}', ['user_id', 'email']);
 
         // Foreign Keys
         $this->addForeignKey(
@@ -94,28 +94,44 @@ class m140418_204054_create_module_tbl extends Migration
         );
 
         // Add super-administrator
-        $this->execute($this->getUserSql());
+        $this->addFirstUser();
         $this->execute($this->getProfileSql());
     }
 
     /**
-     * @return string SQL to insert first user
+     * Insert first super-admin user
      */
-    private function getUserSql()
+    private function addFirstUser()
     {
         $time = time();
         $password_hash = Yii::$app->security->generatePasswordHash('admin12345');
         $auth_key = Yii::$app->security->generateRandomString();
         $token = Security::generateExpiringRandomString();
-        return "INSERT INTO {{%users}} (username, email, password_hash, auth_key, token, role, status_id, created_at, updated_at) VALUES ('admin', 'admin@demo.com', '$password_hash', '$auth_key', '$token', 'superadmin', 1, $time, $time)";
+
+        $this->insert('{{%users}}', [
+            'username' => 'admin',
+            'email' => 'admin@demo.com',
+            'password_hash' => $password_hash,
+            'auth_key' => $auth_key,
+            'token' => $token,
+            'role' => 'superadmin',
+            'status_id' => 1,
+            'created_at' => $time,
+            'updated_at' => $time,
+        ]);
     }
 
     /**
-     * @return string SQL to insert first profile
+     * Insert first super-admin user profile
      */
     private function getProfileSql()
     {
-        return "INSERT INTO {{%profiles}} (user_id, name, surname, avatar_url) VALUES (1, 'Administration', 'Site', '')";
+        $this->insert('{{%profiles}}', [
+            'user_id' => 1,
+            'name' => 'Administration',
+            'surname' => 'Site',
+            'avatar_url' => '',
+        ]);
     }
 
     /**
