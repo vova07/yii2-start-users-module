@@ -81,12 +81,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $query = static::find()->where(['id' => $ids]);
         if ($scope !== null) {
-            if (is_array($scope)) {
-                foreach ($scope as $value) {
-                    $query->$value();
-                }
-            } else {
-                $query->$scope();
+            foreach ((array)$scope as $value) {
+                $query->$value();
             }
         }
         return $query->all();
