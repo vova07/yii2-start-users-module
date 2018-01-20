@@ -1,3 +1,5 @@
+# WARNING: This extension is not more maintained
+
 Yii2-Start users module.
 ========================
 This module provide a users managing system for Yii2-Start application.
